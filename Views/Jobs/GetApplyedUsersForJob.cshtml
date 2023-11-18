@@ -1,0 +1,100 @@
+﻿@using JobOffers.Configurations;
+@using JobOffers.Interfaces;
+@model PaginatedList<ApplyJob>
+@inject IJobsRepo _JobsRepo;
+
+@{
+    string url = Url.RouteUrl(ViewContext.RouteData.Values);
+    int jobId = int.Parse(url.Substring(url.LastIndexOf("/") + 1));
+    int totalCandidate = _JobsRepo.CandidatesCount(jobId).Result;
+}
+
+@if (totalCandidate == 0)
+{
+    <h2 style="color:indianred; margin:200px; text-align:center">No candidate has Applied yet ...</h2>
+}
+else
+{
+    <h5 style="color:indianred;text-align:center">Total candidates is : @totalCandidate</h5>
+
+    <div class="justify-content-center">
+        <form method="get" asp-action="GetApplyedUsersForJob">
+            <div class="row">
+                <div class="input-group mb-3">
+                    <input type="text" name="SearchString" class="form-control input-text" placeholder="Search for candidate...." value="@ViewData["CurrentFilter"]">
+                    <div class="input-group-append">
+                        <button type="submit" value="Search" class="btn btn-outline-warning"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+}
+
+
+<div class="container">
+    <div class="row gx-5">
+        @foreach (ApplyJob candidate in Model)
+        {
+            <aside class="col-lg-4">
+                <img class="mb-3" src="~/images/UserProfile/@candidate.User.Image" style="width:300px; height:350px" />
+            </aside>
+            <main class="col-lg-6">
+                <div class="row mb-5">
+                    <dt class="col-3">Full Name</dt>
+                    <dd class="col-9">@candidate.User.FirstName @candidate.User.LastName</dd>
+                    <hr />
+                    <dt class="col-3">Phone</dt>
+                    @if (@candidate.User.PhoneNumber is null)
+                    {
+                        <dd class="col-9"> N/A</dd>
+                    }
+                    else
+                    {
+                        <dd class="col-9"> @candidate.User.PhoneNumber</dd>
+                    }
+                    <hr />
+
+                    <dt class="col-3">Applyed Date</dt>
+                    <dd class="col-9"> @candidate.AddedOn</dd>
+                    <hr />
+                    <dt class="col-3">CV</dt>
+                    @if (string.IsNullOrEmpty(@candidate.User.CV))
+                    {
+                        <dd class="col-9"> N/A</dd>
+                    }
+                    else
+                    {
+                        <dd class="col-9"><a href="~/CVs/@candidate.User.CV" target="_blank"> @candidate.User.CV</a></dd>
+                    }
+                    <hr />
+                    <dt class="col-3">Message</dt>
+                    @if (string.IsNullOrEmpty(@candidate.Message))
+                    {
+                        <dd class="col-9"> N/A</dd>
+                    }
+                    else
+                    {
+                        <div class="col-9">
+                            <p class="container">
+                                @Html.Raw(candidate.Message)
+                            </p>
+                        </div>
+                    }
+
+
+                </div>
+            </main>
+        }
+    </div>
+</div>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<div style="margin-bottom:15px">
+    <a asp-action="GetApplyedUsersForJob" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-outline-secondary btn-sm @prevDisabled"> Prev </a>
+    <a asp-action="GetApplyedUsersForJob" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-outline-secondary btn-sm @nextDisabled"> Next </a>
+</div>

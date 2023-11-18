@@ -1,0 +1,78 @@
+﻿@using JobOffers.Configurations;
+@model PaginatedList<Job>
+
+@{
+    ViewData["Title"] = "Jobs";
+}
+
+<h4 style=" text-align: center;">Jobs</h4>
+
+<div class="justify-content-center">
+    <a class="btn btn-outline-primary mb-1" asp-action="Create">Create New</a>
+    <form method="get" asp-action="Index">
+        <div class="row">
+            <div class="input-group mb-3">
+                <input type="text" name="SearchString" class="form-control input-text" placeholder="Search Job Title...." value="@ViewData["CurrentFilter"]">
+                <div class="input-group-append">
+                    <button type="submit" value="Search" class="btn btn-outline-warning"><i class="fa fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th><a asp-action="Index" asp-route-sortOrder="@ViewData["TitleSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="sortColumn">Title</a></th>
+            <th>Company Name</th>
+            <th>User</th>
+            <th>Image</th>
+            <th><a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="sortColumn">Publish Date</a></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.Name)
+                </td>
+                <td>
+                    <a asp-action="GetApplyedUsersForJob" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.FirstName)
+                </td>
+                <td>
+                    <img src="~/images/Jobs/@item.Image" height="30px" width="50px" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AddedOn)
+                </td>
+                <td>
+                    <div style="float:right">
+                        <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-edit" style="margin-right:10px; color:slateblue"></i></a>
+                        <a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-info" style="margin-right:10px; color:mediumaquamarine"></i></a>
+                        <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash" style="color:red"></i></a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<div>
+    <a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-outline-secondary btn-sm @prevDisabled"> Prev </a>
+    <a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-outline-secondary btn-sm @nextDisabled"> Next </a>
+</div>

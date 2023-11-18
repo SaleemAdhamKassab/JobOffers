@@ -1,0 +1,64 @@
+﻿@model AddJobViewModel;
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h4 style=" text-align: center;">Create Job Vacancy</h4>
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group mb-2">
+                @*<label asp-for="CategoryId" class="control-label">Category</label>*@
+                <select class="form-select" asp-for="CategoryId" asp-items="@(new SelectList(Model.Categories,"Id","Name"))" required>
+                    <option>Select Category...</option>
+                </select>
+            </div>
+            <div class="form-group mb-2">
+                @*<label asp-for="Title" class="control-label mb-1"></label>*@
+                <input asp-for="Title" class="form-control" placeholder="Title" required />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                @*<label asp-for="Title" class="control-label mb-1"></label>*@
+                <input asp-for="CompanyName" class="form-control" placeholder="Company Name" required />
+                <span asp-validation-for="CompanyName" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                @*<label asp-for="Content" class="control-label"></label>*@
+                <textarea asp-for="Description" id="description" placeholder="Description" required></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-4">
+                <div>
+                    <input type="file" asp-for="Image" class="form-control mb-2" onchange="preview()" />
+                    <span asp-validation-for="Image" class="text-danger"></span>
+                </div>
+                <div>
+                    <img id="frame" src="~/images/Jobs/JobDefaultImage.jpg" class="img-fluid" style="width:  300px; height:300px;" alt="JobDefaultImage" accept="image/png, image/jpg, image/jpeg" />
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary mb-3" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to Jobs</a>
+</div>
+
+
+<script type="text/javascript">
+    function preview() {
+        frame.src = URL.createObjectURL(event.target.files[0]);
+    }
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

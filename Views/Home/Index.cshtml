@@ -1,0 +1,180 @@
+﻿@using JobOffers.Configurations;
+@using JobOffers.Interfaces;
+@using static JobOffers.Configurations.Helper;
+
+@model PaginatedList<Job>
+@inject IJobsRepo _jobsRepo;
+@inject UserManager<ApplicationUser> _userManager;
+@{
+    ViewData["Title"] = "Jobs";
+}
+
+<h2 style=" text-align: center;">Find the Best Jobs</h2>
+<h5 style="text-align:center;">Searching for vacancies & career opportunities? Jobs helps you in your job search</h5>
+@if (User.Identity.Name is null)
+{
+    <h6 style="text-align:center;margin-bottom:50px"><a href="~/Identity/Account/Login"><span style="color:#198754"><b><u>Sign in</u></b></span></a> to View and Apply for your dream job</h6>
+}
+
+<div class="justify-content-center;">
+    <form method="get" asp-action="Index">
+        <div class="row">
+            <div class="input-group mb-3">
+                <input type="text" name="SearchString" class="form-control input-text" placeholder="Search Job Title...." value="@ViewData["CurrentFilter"]">
+                <div class="input-group-append">
+                    <button type="submit" value="Search" class="btn btn-outline-warning"><i class="fa fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="row" style="margin-bottom:50px">
+    @foreach (Job job in Model)
+    {
+        <div class="col-md-3 mb-3">
+            <div class="card border-5">
+                <img class="card-img-top" src="~/images/Jobs/@job.Image" alt="Card image cap" height="200px" width="250px">
+                <div class="card-body text-center">
+                    <h5 class="card-title">@job.Title</h5>
+                    <p class="card-text">
+                        @job.CompanyName
+                        <br><span style="font-size:small">@job.AddedOn.ToString("dd-MMM-yyyy")</span>
+                    </p>
+                    @if (User.IsInRole(Roles.JobSeeker))
+                    {
+                        <a class="btn btn-primary btn-sm" asp-controller="Jobs" asp-action="Details" asp-route-id="@job.Id">Details</a>
+
+                        @if (await _jobsRepo.IsUserAppliedForJobBefore(job.Id, _userManager.FindByNameAsync(User.Identity.Name).Result.Id))
+                        {
+                            <span style="color:green"><i>Applied</i></span>
+                        }
+                        else
+                        {
+                            <a class="btn btn-success btn-sm" asp-controller="ApplyJobs" asp-action="Apply" asp-route-id="@job.Id">Apply</a>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<div>
+    <a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-outline-secondary @prevDisabled"> Prev </a>
+    <a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-outline-secondary @nextDisabled"> Next </a>
+</div>
+
+<hr />
+@*About Us*@
+<div id="aboutUs" class="row" style="margin-bottom:40px">
+    <div class="row h-100 align-items-center py-5">
+        <div class="col-lg-6">
+            <h1 class="display-4">About us</h1>
+            <p class="lead text-muted mb-4">
+                Don't miss the opportunity to see the latest and most important opportunities that suit you and apply for them.
+            </p>
+            <a class="btn btn-outline-primary mb-1" href="~/Identity/Account/Register">Join Us</a>
+        </div>
+        <div class="col-lg-6 d-none d-lg-block"><img src="https://bootstrapious.com/i/snippets/sn-about/illus.png" alt="" class="img-fluid"></div>
+    </div>
+</div>
+
+@*Our Team*@
+<div id="ourTeam" class="row" style="margin-bottom:40px">
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <h2 class="display-4 font-weight-light" style="text-align:center">Meet Our Team</h2>
+        </div>
+    </div>
+
+    <div class="row text-center">
+        <!-- Team item-->
+        <div class="col-xl-3 col-sm-6 mb-5">
+            <div class="bg-white rounded shadow-sm py-5 px-4">
+                <img src="~/images/UserProfile/Saleem.jpg" alt="" width="100" style="height:100px" class="img-fluid rounded-circle mb-3 img-thumbnail shadow-sm">
+                <h5 class="mb-0">Saleem Kassab</h5><span class="small text-uppercase text-muted">CEO - Founder</span>
+                <ul class="social mb-0 list-inline mt-3">
+                    <li class="list-inline-item"><a href="https://www.facebook.com/Saleem.A.Qassab" class="social-link" target="_blank"><i class="fa fa-facebook" target="_blank"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-twitter"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-instagram"></i></a></li>
+                    <li class="list-inline-item"><a href="https://www.linkedin.com/in/saleemadhamkassab/" class="social-link" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- End-->
+        <!-- Team item-->
+        <div class="col-xl-3 col-sm-6 mb-5">
+            <div class="bg-white rounded shadow-sm py-5 px-4">
+                <img style="height:100px" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHdvbWFuJTIwY2xvc2UlMjB1cHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60" alt="" width="100" class="img-fluid rounded-circle mb-3 img-thumbnail shadow-sm">
+                <h5 class="mb-0">Emma Hardy</h5><span class="small text-uppercase text-muted">HR - Director</span>
+                <ul class="social mb-0 list-inline mt-3">
+                    <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-facebook"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-twitter"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-instagram"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-linkedin"></i></a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- End-->
+        <!-- Team item-->
+        <div class="col-xl-3 col-sm-6 mb-5">
+            <div class="bg-white rounded shadow-sm py-5 px-4">
+                <img style="height:100px" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bWVuJTIwY2xvc2UlMjB1cHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60" alt="" width="100" class="img-fluid rounded-circle mb-3 img-thumbnail shadow-sm">
+                <h5 class="mb-0">Tom Sunderland</h5><span class="small text-uppercase text-muted">IT - Manager</span>
+                <ul class="social mb-0 list-inline mt-3">
+                    <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-facebook"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-twitter"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-instagram"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-linkedin"></i></a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- End-->
+        <!-- Team item-->
+        <div class="col-xl-3 col-sm-6 mb-5">
+            <div class="bg-white rounded shadow-sm py-5 px-4">
+                <img style="height:100px" src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d29tYW4lMjBjbG9zZSUyMHVwfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="" width="100" class="img-fluid rounded-circle mb-3 img-thumbnail shadow-sm">
+                <h5 class="mb-0">John Tarly</h5><span class="small text-uppercase text-muted">Art - Director</span>
+                <ul class="social mb-0 list-inline mt-3">
+                    <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-facebook"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-twitter"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-instagram"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-linkedin"></i></a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- End-->
+    </div>
+</div>
+
+@*Contact Us*@
+<div id="contactUs" class="row">
+    <h2 class="display-4 font-weight-light" style="text-align:center; margin-bottom:20px">Contact Us</h2>
+    <div class="col-md-12">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-2">
+                @*<label asp-for="Title" class="control-label mb-1"></label>*@
+                <input class="form-control" placeholder="First Name" required />
+            </div>
+            <div class="form-group mb-2">
+                @*<label asp-for="Title" class="control-label mb-1"></label>*@
+                <input class="form-control" placeholder="Last Name" required />
+            </div>
+            <div class="form-group mb-3">
+                @*<label asp-for="Content" class="control-label"></label>*@
+                <textarea class="form-control" rows="9" placeholder="Subject" required></textarea>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Send Email" class="btn btn-primary mb-3" />
+            </div>
+        </form>
+    </div>
+</div>

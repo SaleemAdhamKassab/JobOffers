@@ -1,0 +1,75 @@
+﻿@page
+@using static JobOffers.Configurations.Helper;
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+<form id="profile-form" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-6">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-3">
+                <input asp-for="Username" class="form-control" placeholder="Userame" disabled />
+                <label asp-for="Username" class="form-label"></label>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.FirstName" class="form-control" placeholder="First Name" />
+                <label asp-for="Input.FirstName" class="form-label"></label>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.LastName" class="form-control" placeholder="Last name" />
+                <label asp-for="Input.LastName" class="form-label"></label>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Phone Number" />
+                <label asp-for="Input.PhoneNumber" class="form-label"></label>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            @if (User.IsInRole(Roles.JobSeeker))
+            {
+                @if (Model.Input.CV is null)
+                {
+                    <span>Upload CV</span>
+                }
+                else
+                {
+                    <div>Current CV: <a href="~/CVs/@Model.Input.CV" target="_blank">@Model.Input.CV</a></div>
+                    <span>Update</span>
+                }
+
+                <div class="mb-3">
+                    <input type="file" class="form-control mb-2" name="postedCV" accept="application/pdf" />
+                </div>
+            }
+            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                @if (Model.Input.Image is null)
+                {
+                    <img id="image" alt="profile" src="~/images/UserProfile/defaultProfilePicture.png" class="img-fluid mb-1" style="width:  300px; height:315px;" />
+                }
+                else
+                {
+                    <img id="image" alt="profile" src="~/images/UserProfile/@Model.Input.Image" class="img-fluid mb-1" style="width:  300px; height:315px;" asp-for="Model.Input.Image" />
+                }
+                <input type="file" class="form-control mb-2" name="postedImage" accept="image/png, image/jpg, image/jpeg" onchange="preview()" />
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<script type="text/javascript">
+    function preview() {
+        image.src = URL.createObjectURL(event.target.files[0]);
+    }
+</script>

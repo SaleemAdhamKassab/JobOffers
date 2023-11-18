@@ -1,0 +1,44 @@
+﻿@model JobDetailesViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h5>Are you sure you want to delete <span style="color:red"><b>(@Model.Title)</b></span> vacancy?</h5>
+<hr />
+<section class="py-5">
+    <div class="container">
+        <div class="row gx-5">
+            <aside class="col-lg-4">
+                <img class="mb-3" src="~/images/jobs/@Model.Image" style="width:300px; height:400px" />
+            </aside>
+            <main class="col-lg-6">
+                <div class="row mb-5">
+                    <dt class="col-3">Title</dt>
+                    <dd class="col-9"> @Html.DisplayFor(model => model.Title)</dd>
+                    <hr />
+                    <dt class="col-3">Company</dt>
+                    <dd class="col-9"> @Html.DisplayFor(model => model.CompanyName)</dd>
+                    <hr />
+                    <dt class="col-3">Category</dt>
+                    <dd class="col-9"> @Html.DisplayFor(model => model.Category)</dd>
+                    <hr />
+                    <dt class="col-3">Author</dt>
+                    <dd class="col-9"> @Html.DisplayFor(model => model.User)</dd>
+                    <hr />
+                    <dt class="col-3">Publish Date</dt>
+                    <dd class="col-9"> @Html.DisplayFor(model => model.AddedOn)</dd>
+                </div>
+                <div class="mb-2">
+                    <form asp-action="Delete">
+                        <input type="hidden" asp-for="Id" />
+                        <input type="submit" value="Delete" class="btn btn-danger" style="width:100%" />
+                    </form>
+                </div>
+                <div>
+                    <a asp-action="Index">Back to jobs</a>
+                </div>
+            </main>
+        </div>
+    </div>
+</section>

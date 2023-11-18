@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Category>
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<h4 style=" text-align: center;">Categories</h4>
+<div class="justify-content-center">
+    <a class="btn btn-outline-primary mb-1" asp-action="Create">Create New</a>
+    <form method="get" asp-action="Search">
+        <div class="row">
+            <div class="input-group mb-3">
+                <input type="search" name="categoryName" class="form-control input-text" placeholder="Search Categories....">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-outline-warning"><i class="fa fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    <div style="float:right">
+                        <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-edit" style="margin-right:10px; color:slateblue"></i></a>
+                        <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash" style="color:red"></i></a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,42 @@
+﻿@model ApplyJob
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h5>Are you sure you want to delete <span style="color:red"><b>(@Model.Job.Title)</b></span> job request?</h5>
+<hr />
+
+<div class="container">
+    <div class="row mb-5">
+        <dt class="col-3">Title</dt>
+        <dd class="col-9"> @Html.DisplayFor(model => model.Job.Title)</dd>
+        <hr />
+        <dt class="col-3">Company</dt>
+        <dd class="col-9"> @Html.DisplayFor(model => model.Job.CompanyName)</dd>
+        <hr />
+        <dt class="col-3">Category</dt>
+        <dd class="col-9"> @Html.DisplayFor(model => model.Job.Category.Name)</dd>
+        <hr />
+        <dt class="col-3">Message</dt>
+        @if (Model.Message is null)
+        {
+            <dd class="col-9">N/A</dd>
+        }
+        else
+        {
+            <dd class="col-9"> @Html.DisplayFor(model => model.Message)</dd>
+        }        <hr />
+        <dt class="col-3">Applyed Date</dt>
+        <dd class="col-9"> @Html.DisplayFor(model => model.AddedOn)</dd>
+    </div>
+    <div class="mb-2">
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Delete" class="btn btn-danger" style="margin-bottom:10px" />
+        </form>
+    </div>
+    <div>
+        <a asp-action="Index">Back to my jobs</a>
+    </div>
+</div>

@@ -1,0 +1,68 @@
+﻿@using JobOffers.Configurations;
+@model PaginatedList<ApplyJob>
+
+@{
+    ViewData["Title"] = "Jobs";
+}
+
+<h4 style=" text-align: center;">My jobs</h4>
+
+<div class="justify-content-center">
+    <form method="get" asp-action="Index">
+        <div class="row">
+            <div class="input-group mb-3">
+                <input type="text" name="SearchString" class="form-control input-text" placeholder="Search Job Title...." value="@ViewData["CurrentFilter"]">
+                <div class="input-group-append">
+                    <button type="submit" value="Search" class="btn btn-outline-warning"><i class="fa fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Company Name</th>
+            <th>Title</th>
+            <th>Added On</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Job.Category.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Job.CompanyName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Job.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AddedOn)
+                </td>
+                <td>
+                    <div style="float:right">
+                        <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-edit" style="margin-right:10px; color:slateblue"></i></a>
+                        <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash" style="color:red"></i></a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<div>
+    <a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-outline-secondary btn-sm @prevDisabled"> Prev </a>
+    <a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-outline-secondary btn-sm @nextDisabled"> Next </a>
+</div>

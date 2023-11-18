@@ -1,0 +1,25 @@
+﻿@model ApplyJobViewModel;
+
+<h4 style=" text-align: center; margin:30px">Apply for Job</h4>
+
+<form asp-action="Apply">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="JobId" />
+    <input type="hidden" asp-for="UserId" />
+    <div class="form-group mb-3">
+        <textarea asp-for="Message" id="description" placeholder="Message"></textarea>
+        <span asp-validation-for="Message" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Apply Now" class="btn btn-success mb-3" />
+    </div>
+</form>
+
+@if (ViewBag.Result is not null)
+{
+    <h6 style="color:red">@ViewBag.Result</h6>
+}
+
+<div>
+    <a asp-action="Index" asp-controller="Home">Back to Jobs</a>
+</div>

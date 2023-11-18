@@ -1,0 +1,65 @@
+﻿@model AddUserViewModel;
+
+@{
+    ViewData["Title"] = "Add New User";
+}
+
+<form id="registerForm" asp-action="Add" method="post">
+    <h2>Create a new User.</h2>
+    <hr />
+    <div class="form-floating mb-3">
+        <input asp-for="FirstName" class="form-control" autocomplete="firstName" aria-required="true" placeholder="First Name" />
+        <label asp-for="FirstName">FirstName</label>
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+    <div class="form-floating mb-3">
+        <input asp-for="LastName" class="form-control" autocomplete="LastName" aria-required="true" placeholder="LastName" />
+        <label asp-for="LastName">LastName</label>
+        <span asp-validation-for="LastName" class="text-danger"></span>
+    </div>
+    <div class="form-floating mb-3">
+        <input asp-for="UserName" class="form-control" autocomplete="UserName" aria-required="true" placeholder="UserName" />
+        <label asp-for="UserName">UserName</label>
+        <span asp-validation-for="UserName" class="text-danger"></span>
+    </div>
+    <div class="form-floating mb-3">
+        <input asp-for="Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+        <label asp-for="Email">Email</label>
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="form-floating mb-3">
+        <input asp-for="Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+        <label asp-for="Password">Password</label>
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="form-floating mb-3">
+        <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+        <label asp-for="ConfirmPassword">Confirm Password</label>
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+       @* <label asp-for="Type" class="control-label">Account Type</label>
+        <select class="form-select" asp-for="Type" required>
+            <option>@ConstValues.EnUserTypes.Publisher</option>
+            <option>@ConstValues.EnUserTypes.Researcher</option>
+        </select>*@
+    </div>
+    <hr />
+    <h6>Roles</h6>
+    @for (int i = 0; i < Model.Roles.Count; i++)
+    {
+        <div class="form-check m-1">
+            <input type="hidden" asp-for="@Model.Roles[i].Name" />
+            <input asp-for="@Model.Roles[i].IsSelected" class="form-check-input" />
+            <label class="form-check-label" asp-for="@Model.Roles[i].IsSelected">
+                @Model.Roles[i].Name
+            </label>
+        </div>
+    }
+    <span asp-validation-for="Roles" class="text-danger"></span>
+    <button id="registerSubmit" type="submit" class="btn btn-lg btn-primary d-block mt-4">Save</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
